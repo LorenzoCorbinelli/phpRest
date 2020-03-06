@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Home</title>
+	</head>
+	<body>
+		<script>
+			function scelta_metodo()
+			{
+				if(document.getElementById('metodo').value=="get")
+				{
+					document.getElementById('get').hidden=false;
+					mostra_get();
+				}
+				else
+				{
+					document.getElementById('get').hidden=true;
+				}
+			}
+			function mostra_get()
+			{
+				document.getElementById('get').innerHTML = 'Seleziona la tabella: <select id="tabella"> <option vlaue="student">Student</option> <option value="class">Class</option> <br> </select> <input id="tutto_get" type="radio" name="get" value="tutto" onchange="radio_get()">Tutto <input id="radio_id" type="radio" name="get" value="ID" onchange="radio_get()">Con ID <input type="text" id="id_get" hidden=true> <input type="button" onclick="get()" value="Invia">';
+			}
+			function radio_get()
+			{
+				if(document.getElementById('radio_id').checked)
+					document.getElementById('id_get').hidden=false;
+				else
+					document.getElementById('id_get').hidden=true;
+			}
+			function get()
+			{	
+				var xhr = new XMLHttpRequest();
+				//con ID
+				if((document.getElementById('id_get').value!="")&&!document.getElementById('tutto_get').checked)
+				{
+					if(document.getElementById('tabella').value=='class')
+					{
+						xhr.open("GET", ('classes.php/'+document.getElementById('id_get').value), true);
+					}
+					else
+					{
+						xhr.open("GET", ('students.php/'+document.getElementById('id_get').value), true);
+					}
+				//senza ID (tutti i record)
+				}else
+				{
+					if(document.getElementById('tabella').value=='class')
+					{
+						xhr.open("GET", 'classes.php', true);
+					}
+					else
+					{
+						xhr.open("GET", 'students.php', true);
+					}
+				}
+				//configuro la callback per la risposta
+				xhr.onload = function() {
+					document.getElementById('risposta').innerHTML = xhr.response;
+				};
+				//configuro la callback di errore
+				xhr.onerror = function() { 
+					alert('Errore');
+				};
+				xhr.send();
+			}
+		</script>
+		<div>
+			<select id="metodo" onchange="scelta_metodo()">
+				<option value="default">Seleziona il metodo</option>
+				<option value="get">GET</option>
+				<option value="post">POST</option>
+			</select>
+			<div id="get"></div>
+		</div>
+		<p>Risposta:</p>
+		<div id="risposta"></div>
+	</body>
+</html>
