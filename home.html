@@ -3,23 +3,65 @@
 	<head>
 		<title>Home</title>
 	</head>
-	<body>
+	<body onload="setup()">
 		<script>
+			var xhr;
+			function setup()
+			{
+				xhr = new XMLHttpRequest();
+				//configuro la callback per la risposta
+				xhr.onload = function() {
+					document.getElementById('risposta').innerHTML = xhr.response;
+				};
+				//configuro la callback di errore
+				xhr.onerror = function() { 
+					alert('Errore');
+				};
+			}
 			function scelta_metodo()
 			{
-				if(document.getElementById('metodo').value=="get")
+				switch(document.getElementById('metodo').value)
 				{
-					document.getElementById('get').hidden=false;
-					mostra_get();
-				}
-				else
-				{
-					document.getElementById('get').hidden=true;
+					case "get":
+						document.getElementById('get').hidden=false;
+						document.getElementById('post').hidden=true;
+						document.getElementById('delete').hidden=true;
+						document.getElementById('risposta').innerHTML='';
+						mostra_get();
+					break;
+					case "post":
+						document.getElementById('post').hidden=false;
+						document.getElementById('get').hidden=true;
+						document.getElementById('delete').hidden=true;
+						document.getElementById('risposta').innerHTML='';
+						mostra_post();
+					break;
+					case "delete":
+						document.getElementById('delete').hidden=false;
+						document.getElementById('get').hidden=true;
+						document.getElementById('post').hidden=true;
+						document.getElementById('risposta').innerHTML='';
+						mostra_delete();
+					break;
+					default:
+						document.getElementById('delete').hidden=true;
+						document.getElementById('get').hidden=true;
+						document.getElementById('post').hidden=true;
+						document.getElementById('risposta').innerHTML='';
+					break;
 				}
 			}
 			function mostra_get()
 			{
-				document.getElementById('get').innerHTML = 'Seleziona la tabella: <select id="tabella"> <option vlaue="student">Student</option> <option value="class">Class</option> <br> </select> <input id="tutto_get" type="radio" name="get" value="tutto" onchange="radio_get()">Tutto <input id="radio_id" type="radio" name="get" value="ID" onchange="radio_get()">Con ID <input type="text" id="id_get" hidden=true> <input type="button" onclick="get()" value="Invia">';
+				document.getElementById('get').innerHTML = 'Seleziona la tabella: <select id="tabella"> <option value="student">Student</option> <option value="class">Class</option> <br> </select> <input id="tutto_get" type="radio" name="get" value="tutto" onchange="radio_get()">Tutto <input id="radio_id" type="radio" name="get" value="ID" onchange="radio_get()">Con ID <input type="text" id="id_get" hidden=true> <input type="button" onclick="get()" value="Invia">';
+			}
+			function mostra_post()
+			{
+				document.getElementById('post').innerHTML = 'ID: <input type="text" id="post_id"><br> Name: <input type="text" id="post_name"><br> Surname: <input type="text" id="post_surname"><br> SidiCode: <input type="text" id="post_sidiCode"><br> TaxCode: <input type="text" id="post_taxCode"><br> <input type="button" value="Invia" onclick="post()">';
+			}
+			function mostra_delete()
+			{
+				document.getElementById('delete').innerHTML = 'Seleziona la tabella: <select id="tabella_delete"> <option value="student">Student</option> <option value="class">Class</option> <input type="text" id="id_delete"> <input type="button" onclick="Delete()" value="Invia">';
 			}
 			function radio_get()
 			{
@@ -30,7 +72,6 @@
 			}
 			function get()
 			{	
-				var xhr = new XMLHttpRequest();
 				//con ID
 				if((document.getElementById('id_get').value!="")&&!document.getElementById('tutto_get').checked)
 				{
@@ -54,14 +95,24 @@
 						xhr.open("GET", 'students.php', true);
 					}
 				}
-				//configuro la callback per la risposta
-				xhr.onload = function() {
-					document.getElementById('risposta').innerHTML = xhr.response;
-				};
-				//configuro la callback di errore
-				xhr.onerror = function() { 
-					alert('Errore');
-				};
+				xhr.send();
+			}
+			function post()
+			{
+				xhr.open("POST", 'students.php', true);
+				var json = '{"id":"' + document.getElementById('post_id').value + '", "name":"' + document.getElementById('post_name').value + '", "surname":"' + document.getElementById('post_surname').value + '", "sidiCode":"' + document.getElementById('post_sidiCode').value + '", "taxCode":"' + document.getElementById('post_taxCode').value +'"}';
+				xhr.send(json);
+			}
+			function Delete()
+			{
+				if(document.getElementById('tabella_delete').value=='student')
+				{
+					xhr.open("DELETE", 'students.php/'+document.getElementById('id_delete').value, true);
+				}
+				else
+				{
+					xhr.open("DELETE", 'classes.php/'+document.getElementById('id_delete').value, true);
+				}
 				xhr.send();
 			}
 		</script>
@@ -70,8 +121,11 @@
 				<option value="default">Seleziona il metodo</option>
 				<option value="get">GET</option>
 				<option value="post">POST</option>
+				<option value="delete">DELETE</option>
 			</select>
 			<div id="get"></div>
+			<div id="post"></div>
+			<div id="delete"></div>
 		</div>
 		<p>Risposta:</p>
 		<div id="risposta"></div>

@@ -36,5 +36,44 @@
             header('Content-Type: application/json');
             echo $js_encode;
         break;
+		case 'POST':
+			//prendo il json della richiesta
+			$json = file_get_contents('php://input');
+			//trasformo il json ricevuto in un oggetto
+			$data = json_decode($json,true);
+			$sql = "insert into student values(:id, :name, :surname, :sidiCode, :taxCode);";
+			$stmt = $_con->prepare($sql);
+			$params = [
+				'id'=>$data->id,
+				'name'=>$data->name,
+				'surname'=>$data->surname,
+				'sidiCode'=>$data->sidiCode,
+				'taxCode'=>$data->taxCode
+			];
+			$stmt->execute($params);
+			$sql = "select * from student where id=:id";
+			$stmt = $_con->prepare($sql);
+			$params = [
+				'id'=>$data->id
+			];
+			$stmt->execute($params);
+			//ritorno il json dello studente inserito
+			$data = $stmt->fetch(\PDO::FETCH_ASSOC);
+			$js_encode = json_encode(array($data),true);
+            //output
+            header('Content-Type: application/json');
+            echo $js_encode;
+		break;
+		case 'DELETE':
+			$pathArray = explode('/',$_SERVER['REQUEST_URI']);
+			$id=$pathArray[3];
+			$sql = 'delete from student where id=:id';
+			$stmt = $_con->prepare($sql);
+			$params = [
+                    'id'=>$id
+                ];
+			$stmt->execute($params);
+			echo 'Cancellazione effettuata.';
+		break;
     }
 ?>
