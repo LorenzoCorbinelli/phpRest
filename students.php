@@ -41,20 +41,19 @@
 			$json = file_get_contents('php://input');
 			//trasformo il json ricevuto in un oggetto
 			$data = json_decode($json,true);
-			$sql = "insert into student values(:id, :name, :surname, :sidiCode, :taxCode);";
+			$sql = "insert into student values(default, :name, :surname, :sidiCode, :taxCode);";
 			$stmt = $_con->prepare($sql);
 			$params = [
-				'id'=>$data->id,
-				'name'=>$data->name,
-				'surname'=>$data->surname,
-				'sidiCode'=>$data->sidiCode,
-				'taxCode'=>$data->taxCode
+				'name'=>$data["name"],
+				'surname'=>$data["surname"],
+				'sidiCode'=>$data["sidiCode"],
+				'taxCode'=>$data["taxCode"]
 			];
 			$stmt->execute($params);
-			$sql = "select * from student where id=:id";
+			$sql = "select * from student where sidiCode=:sidiCode";
 			$stmt = $_con->prepare($sql);
 			$params = [
-				'id'=>$data->id
+				'sidiCode'=>$data["sidiCode"]
 			];
 			$stmt->execute($params);
 			//ritorno il json dello studente inserito

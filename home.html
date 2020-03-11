@@ -27,21 +27,18 @@
 						document.getElementById('post').hidden=true;
 						document.getElementById('delete').hidden=true;
 						document.getElementById('risposta').innerHTML='';
-						mostra_get();
 					break;
 					case "post":
 						document.getElementById('post').hidden=false;
 						document.getElementById('get').hidden=true;
 						document.getElementById('delete').hidden=true;
 						document.getElementById('risposta').innerHTML='';
-						mostra_post();
 					break;
 					case "delete":
 						document.getElementById('delete').hidden=false;
 						document.getElementById('get').hidden=true;
 						document.getElementById('post').hidden=true;
 						document.getElementById('risposta').innerHTML='';
-						mostra_delete();
 					break;
 					default:
 						document.getElementById('delete').hidden=true;
@@ -51,24 +48,33 @@
 					break;
 				}
 			}
-			function mostra_get()
-			{
-				document.getElementById('get').innerHTML = 'Seleziona la tabella: <select id="tabella"> <option value="student">Student</option> <option value="class">Class</option> <br> </select> <input id="tutto_get" type="radio" name="get" value="tutto" onchange="radio_get()">Tutto <input id="radio_id" type="radio" name="get" value="ID" onchange="radio_get()">Con ID <input type="text" id="id_get" hidden=true> <input type="button" onclick="get()" value="Invia">';
-			}
-			function mostra_post()
-			{
-				document.getElementById('post').innerHTML = 'ID: <input type="text" id="post_id"><br> Name: <input type="text" id="post_name"><br> Surname: <input type="text" id="post_surname"><br> SidiCode: <input type="text" id="post_sidiCode"><br> TaxCode: <input type="text" id="post_taxCode"><br> <input type="button" value="Invia" onclick="post()">';
-			}
-			function mostra_delete()
-			{
-				document.getElementById('delete').innerHTML = 'Seleziona la tabella: <select id="tabella_delete"> <option value="student">Student</option> <option value="class">Class</option> <input type="text" id="id_delete"> <input type="button" onclick="Delete()" value="Invia">';
-			}
 			function radio_get()
 			{
 				if(document.getElementById('radio_id').checked)
 					document.getElementById('id_get').hidden=false;
 				else
 					document.getElementById('id_get').hidden=true;
+			}
+			function selezione_tabella()
+			{
+				if(document.getElementById('tabella_post').value=='student')
+				{
+					document.getElementById('post_student').hidden=false;
+					document.getElementById('post_class').hidden=true;
+					document.getElementById('post_studentClass').hidden=true;
+				}
+				else //if(document.getElementById('tabella_post').value=='class') 
+				{
+					document.getElementById('post_student').hidden=true;
+					document.getElementById('post_class').hidden=false;
+					document.getElementById('post_studentClass').hidden=true;
+				}
+				/*else
+				{
+					document.getElementById('post_student').hidden=true;
+					document.getElementById('post_class').hidden=true;
+					document.getElementById('post_studentClass').hidden=false;
+				} */
 			}
 			function get()
 			{	
@@ -99,9 +105,18 @@
 			}
 			function post()
 			{
-				xhr.open("POST", 'students.php', true);
-				var json = '{"id":"' + document.getElementById('post_id').value + '", "name":"' + document.getElementById('post_name').value + '", "surname":"' + document.getElementById('post_surname').value + '", "sidiCode":"' + document.getElementById('post_sidiCode').value + '", "taxCode":"' + document.getElementById('post_taxCode').value +'"}';
-				xhr.send(json);
+				if(document.getElementById('tabella_post').value=='student')
+				{
+					xhr.open("POST", 'students.php', true);
+					var json = '{"name":"' + document.getElementById('post_name').value + '", "surname":"' + document.getElementById('post_surname').value + '", "sidiCode":"' + document.getElementById('post_sidiCode').value + '", "taxCode":"' + document.getElementById('post_taxCode').value +'"}';
+				}
+				else
+				{
+					xhr.open("POST", 'classes.php' ,true);
+					var json = '{"year":"' + document.getElementById('post_year').value + '", "section":"' + document.getElementById('post_section').value + '"}';
+				}
+				xhr.setRequestHeader("Content-type", "application/json");
+				xhr.send(json); 
 			}
 			function Delete()
 			{
@@ -123,9 +138,48 @@
 				<option value="post">POST</option>
 				<option value="delete">DELETE</option>
 			</select>
-			<div id="get"></div>
-			<div id="post"></div>
-			<div id="delete"></div>
+			<div id="get" hidden=true>
+				Seleziona la tabella: 
+				<select id="tabella"> 
+					<option value="student">Student</option> 
+					<option value="class">Class</option> 
+				</select> 
+				<input id="tutto_get" type="radio" name="get" value="tutto" onchange="radio_get()">Tutto <input id="radio_id" type="radio" name="get" value="ID" onchange="radio_get()">
+				Con ID <input type="text" id="id_get" hidden=true> 
+				<input type="button" onclick="get()" value="Invia">
+			</div>
+			<div id="post" hidden=true>
+				Seleziona la tabella: 
+				<select id="tabella_post" onchange="selezione_tabella()"> 
+					<option value="student">Student</option> 
+					<option value="class">Class</option> 
+					<option value="student_class">Student_class</option> 
+				</select> 
+				<div id="post_student">
+					Name: <input type="text" id="post_name"><br> 
+					Surname: <input type="text" id="post_surname"><br> 
+					SidiCode: <input type="text" id="post_sidiCode"><br> 
+					TaxCode: <input type="text" id="post_taxCode"><br> 
+				</div>
+				<div id="post_class" hidden=true>
+					Year: <input type="text" id="post_year"><br>
+					Section: <input type="text" id="post_section"><br>
+				</div>
+			<!--	<div id="post_studentClass" hidden=true>
+					idStudent: <input type="text" id="post_idStudent"><br> 
+					idClass: <input type="text" id="post_idClass"><br> 
+				</div> -->
+				<input id="invia" type="button" value="Invia" onclick="post()">
+			</div>
+			<div id="delete" hidden=true>
+				Seleziona la tabella: 
+				<select id="tabella_delete"> 
+					<option value="student">Student</option> 
+					<option value="class">Class</option> 
+				</select>
+				<input type="text" id="id_delete"> 
+				<input type="button" onclick="Delete()" value="Invia">
+			</div>
 		</div>
 		<p>Risposta:</p>
 		<div id="risposta"></div>
