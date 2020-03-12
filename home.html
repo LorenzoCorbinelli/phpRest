@@ -26,24 +26,35 @@
 						document.getElementById('get').hidden=false;
 						document.getElementById('post').hidden=true;
 						document.getElementById('delete').hidden=true;
+						document.getElementById('put').hidden=true;
 						document.getElementById('risposta').innerHTML='';
 					break;
 					case "post":
 						document.getElementById('post').hidden=false;
 						document.getElementById('get').hidden=true;
 						document.getElementById('delete').hidden=true;
+						document.getElementById('put').hidden=true;
 						document.getElementById('risposta').innerHTML='';
 					break;
 					case "delete":
 						document.getElementById('delete').hidden=false;
 						document.getElementById('get').hidden=true;
 						document.getElementById('post').hidden=true;
+						document.getElementById('put').hidden=true;
+						document.getElementById('risposta').innerHTML='';
+					break;
+					case "put":
+						document.getElementById('get').hidden=true;
+						document.getElementById('post').hidden=true;
+						document.getElementById('delete').hidden=true;
+						document.getElementById('put').hidden=false;
 						document.getElementById('risposta').innerHTML='';
 					break;
 					default:
 						document.getElementById('delete').hidden=true;
 						document.getElementById('get').hidden=true;
 						document.getElementById('post').hidden=true;
+						document.getElementById('put').hidden=true;
 						document.getElementById('risposta').innerHTML='';
 					break;
 				}
@@ -55,19 +66,19 @@
 				else
 					document.getElementById('id_get').hidden=true;
 			}
-			function selezione_tabella()
+			function selezione_tabellaPost()
 			{
 				if(document.getElementById('tabella_post').value=='student')
 				{
 					document.getElementById('post_student').hidden=false;
 					document.getElementById('post_class').hidden=true;
-					document.getElementById('post_studentClass').hidden=true;
+				//	document.getElementById('post_studentClass').hidden=true;
 				}
 				else //if(document.getElementById('tabella_post').value=='class') 
 				{
 					document.getElementById('post_student').hidden=true;
 					document.getElementById('post_class').hidden=false;
-					document.getElementById('post_studentClass').hidden=true;
+				//	document.getElementById('post_studentClass').hidden=true;
 				}
 				/*else
 				{
@@ -75,6 +86,18 @@
 					document.getElementById('post_class').hidden=true;
 					document.getElementById('post_studentClass').hidden=false;
 				} */
+			}
+			function selezione_tabellaPut()
+			{
+				if(document.getElementById('tabella_put').value=='student')
+				{
+					document.getElementById('put_student').hidden=false;
+					document.getElementById('put_class').hidden=true;
+				}else
+				{
+					document.getElementById('put_student').hidden=true;
+					document.getElementById('put_class').hidden=false;
+				}
 			}
 			function get()
 			{	
@@ -130,6 +153,21 @@
 				}
 				xhr.send();
 			}
+			function put()
+			{
+				if(document.getElementById('tabella_put').value=='student')
+				{
+					xhr.open("PUT", 'students.php/'+document.getElementById('id_put').value, true);
+					var json = '{"name":"' + document.getElementById('put_name').value + '", "surname":"' + document.getElementById('put_surname').value + '", "sidiCode":"' + document.getElementById('put_sidiCode').value + '", "taxCode":"' + document.getElementById('put_taxCode').value +'"}';
+				}
+				else
+				{
+					xhr.open("PUT", 'classes.php/'+document.getElementById('id_put').value ,true);
+					var json = '{"year":"' + document.getElementById('put_year').value + '", "section":"' + document.getElementById('put_section').value + '"}';
+				}
+				xhr.setRequestHeader("Content-type", "application/json");
+				xhr.send(json); 
+			}
 		</script>
 		<div>
 			<select id="metodo" onchange="scelta_metodo()">
@@ -137,6 +175,7 @@
 				<option value="get">GET</option>
 				<option value="post">POST</option>
 				<option value="delete">DELETE</option>
+				<option value="put">PUT</option>
 			</select>
 			<div id="get" hidden=true>
 				Seleziona la tabella: 
@@ -150,10 +189,10 @@
 			</div>
 			<div id="post" hidden=true>
 				Seleziona la tabella: 
-				<select id="tabella_post" onchange="selezione_tabella()"> 
+				<select id="tabella_post" onchange="selezione_tabellaPost()"> 
 					<option value="student">Student</option> 
 					<option value="class">Class</option> 
-					<option value="student_class">Student_class</option> 
+				<!--	<option value="student_class">Student_class</option> -->
 				</select> 
 				<div id="post_student">
 					Name: <input type="text" id="post_name"><br> 
@@ -179,6 +218,24 @@
 				</select>
 				<input type="text" id="id_delete"> 
 				<input type="button" onclick="Delete()" value="Invia">
+			</div>
+			<div id="put" hidden=true>
+				<select id="tabella_put" onchange="selezione_tabellaPut()"> 
+					<option value="student">Student</option> 
+					<option value="class">Class</option> 
+				</select> <br>
+				ID:<input type="text" id="id_put">
+				<div id="put_student">
+					Name: <input type="text" id="put_name"><br> 
+					Surname: <input type="text" id="put_surname"><br> 
+					SidiCode: <input type="text" id="put_sidiCode"><br> 
+					TaxCode: <input type="text" id="put_taxCode"><br>
+				</div>
+				<div id="put_class" hidden=true>
+					Year: <input type="text" id="put_year"><br>
+					Section: <input type="text" id="put_section"><br>
+				</div>
+				<input type="button" onclick="put()" value="Invia">
 			</div>
 		</div>
 		<p>Risposta:</p>
