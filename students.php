@@ -78,7 +78,7 @@
 			$pathArray = explode('/',$_SERVER['REQUEST_URI']);
 			$id=$pathArray[3];
 			$json = file_get_contents('php://input');
-			//trasformo il json ricevuto in un oggetto
+			//trasformo il json ricevuto
 			$data = json_decode($json,true);
 			$sql = 'update student set name=:name, surname=:surname, sidiCode=:sidiCode, taxCode=:taxCode where id=:id';
 			$stmt = $_con->prepare($sql);
@@ -117,7 +117,40 @@
 			$stmt->execute($params);
 			$data = $stmt->fetch(\PDO::FETCH_ASSOC);
 			$js_encode = json_encode(array($data),true);
-            //output dei dati dello studente aggiornati
+            //output dei dati dello studente aggiornato
+            header('Content-Type: application/json');
+            echo $js_encode;
+		break;
+		case 'PATCH':
+			$pathArray = explode('/',$_SERVER['REQUEST_URI']);
+			$id=$pathArray[3];
+			$json = file_get_contents('php://input');
+			//trasformo il json ricevuto
+			$data = json_decode($json,true);
+			$sql = 'update student set ';
+			
+			if($data['name']!="")
+				$sql = $sql . 'name="' . $data['name'] . '",';
+			if($data['surname']!="")
+				$sql = $sql . 'surname="' . $data['surname'] . '",';
+			if($data['sidiCode']!="")
+				$sql = $sql . 'sidiCode="' . $data['sidiCode'] . '",';
+			if($data['taxCode']!="")
+				$sql = $sql . 'taxCode="' . $data['taxCode'] . '",';
+			
+			$sql = substr($sql, 0, strlen($sql)-1);	//tolgo l'ultima virgola
+			$sql = $sql . ' where id=' . $id;
+			$stmt = $_con->prepare($sql);
+			$stmt->execute();
+			$sql = 'select * from student where id=:id';
+			$stmt = $_con->prepare($sql);
+			$params = [
+				'id'=>$id
+			];
+			$stmt->execute($params);
+			$data = $stmt->fetch(\PDO::FETCH_ASSOC);
+			$js_encode = json_encode(array($data),true);
+            //output dei dati dello studente aggiornato
             header('Content-Type: application/json');
             echo $js_encode;
 		break;

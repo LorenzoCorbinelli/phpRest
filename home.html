@@ -27,6 +27,7 @@
 						document.getElementById('post').hidden=true;
 						document.getElementById('delete').hidden=true;
 						document.getElementById('put').hidden=true;
+						document.getElementById('patch').hidden=true;
 						document.getElementById('risposta').innerHTML='';
 					break;
 					case "post":
@@ -34,6 +35,7 @@
 						document.getElementById('get').hidden=true;
 						document.getElementById('delete').hidden=true;
 						document.getElementById('put').hidden=true;
+						document.getElementById('patch').hidden=true;
 						document.getElementById('risposta').innerHTML='';
 					break;
 					case "delete":
@@ -41,6 +43,15 @@
 						document.getElementById('get').hidden=true;
 						document.getElementById('post').hidden=true;
 						document.getElementById('put').hidden=true;
+						document.getElementById('patch').hidden=true;
+						document.getElementById('risposta').innerHTML='';
+					break;
+					case "patch":
+						document.getElementById('get').hidden=true;
+						document.getElementById('post').hidden=true;
+						document.getElementById('delete').hidden=true;
+						document.getElementById('put').hidden=true;
+						document.getElementById('patch').hidden=false;
 						document.getElementById('risposta').innerHTML='';
 					break;
 					case "put":
@@ -48,13 +59,14 @@
 						document.getElementById('post').hidden=true;
 						document.getElementById('delete').hidden=true;
 						document.getElementById('put').hidden=false;
+						document.getElementById('patch').hidden=true;
 						document.getElementById('risposta').innerHTML='';
 					break;
 					default:
 						document.getElementById('delete').hidden=true;
 						document.getElementById('get').hidden=true;
-						document.getElementById('post').hidden=true;
-						document.getElementById('put').hidden=true;
+						document.getElementById('post').hidden=true
+						document.getElementById('patch').hidden=true;
 						document.getElementById('risposta').innerHTML='';
 					break;
 				}
@@ -97,6 +109,18 @@
 				{
 					document.getElementById('put_student').hidden=true;
 					document.getElementById('put_class').hidden=false;
+				}
+			}
+			function selezione_tabellaPatch()
+			{
+				if(document.getElementById('tabella_patch').value=='student')
+				{
+					document.getElementById('patch_student').hidden=false;
+					document.getElementById('patch_class').hidden=true;
+				}else
+				{
+					document.getElementById('patch_student').hidden=true;
+					document.getElementById('patch_class').hidden=false;
 				}
 			}
 			function get()
@@ -153,6 +177,21 @@
 				}
 				xhr.send();
 			}
+			function patch()
+			{
+				if(document.getElementById('tabella_patch').value=='student')
+				{
+					xhr.open("PATCH", 'students.php/'+document.getElementById('id_patch').value, true);
+					var json = '{"name":"' + document.getElementById('patch_name').value + '", "surname":"' + document.getElementById('patch_surname').value + '", "sidiCode":"' + document.getElementById('patch_sidiCode').value + '", "taxCode":"' + document.getElementById('patch_taxCode').value +'"}';
+				}
+				else
+				{
+					xhr.open("PATCH", 'classes.php/'+document.getElementById('id_patch').value ,true);
+					var json = '{"year":"' + document.getElementById('patch_year').value + '", "section":"' + document.getElementById('patch_section').value + '"}';
+				}
+				xhr.setRequestHeader("Content-type", "application/json");
+				xhr.send(json); 
+			}
 			function put()
 			{
 				if(document.getElementById('tabella_put').value=='student')
@@ -175,6 +214,7 @@
 				<option value="get">GET</option>
 				<option value="post">POST</option>
 				<option value="delete">DELETE</option>
+				<option value="patch">PATCH</option>
 				<option value="put">PUT</option>
 			</select>
 			<div id="get" hidden=true>
@@ -218,6 +258,24 @@
 				</select>
 				<input type="text" id="id_delete"> 
 				<input type="button" onclick="Delete()" value="Invia">
+			</div>
+			<div id="patch" hidden=true>
+				<select id="tabella_patch" onchange="selezione_tabellaPatch()"> 
+					<option value="student">Student</option> 
+					<option value="class">Class</option> 
+				</select> <br>
+				ID:<input type="text" id="id_patch">
+				<div id="patch_student">
+					Name: <input type="text" id="patch_name"><br> 
+					Surname: <input type="text" id="patch_surname"><br> 
+					SidiCode: <input type="text" id="patch_sidiCode"><br> 
+					TaxCode: <input type="text" id="patch_taxCode"><br>
+				</div>
+				<div id="patch_class" hidden=true>
+					Year: <input type="text" id="patch_year"><br>
+					Section: <input type="text" id="patch_section"><br>
+				</div>
+				<input type="button" onclick="patch()" value="Invia">
 			</div>
 			<div id="put" hidden=true>
 				<select id="tabella_put" onchange="selezione_tabellaPut()"> 
