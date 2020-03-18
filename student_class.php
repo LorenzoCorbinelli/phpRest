@@ -15,7 +15,7 @@
             {
                 //con parametro id
                 $id = $pathArray[3];
-                $sql = "select * from student where id=:id";
+                $sql = "select * from student_class where id=:id";
                 $stmt = $_con->prepare($sql);
                 $params = [
                     'id'=>$id
@@ -26,7 +26,7 @@
             else
             {
                 //senza il parametro id torna tutta la tabella
-                $sql = "select * from student";
+                $sql = "select * from student_class";
                 $stmt = $_con->prepare($sql);
                 $stmt->execute();
                 $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -41,32 +41,31 @@
 			$json = file_get_contents('php://input');
 			//trasformo il json ricevuto
 			$data = json_decode($json,true);
-			$sql = "insert into student values(default, :name, :surname, :sidiCode, :taxCode);";
+			$sql = "insert into student_class values(default, :idStudent, :idClass);";
 			$stmt = $_con->prepare($sql);
 			$params = [
-				'name'=>$data["name"],
-				'surname'=>$data["surname"],
-				'sidiCode'=>$data["sidiCode"],
-				'taxCode'=>$data["taxCode"]
+				'idStudent'=>$data["idStudent"],
+				'idClass'=>$data["idClass"]
 			];
 			$stmt->execute($params);
-			$sql = "select * from student where sidiCode=:sidiCode";
+			$sql = "select * from student_class where idStudent=:idStudent and idClass=:idClass";
 			$stmt = $_con->prepare($sql);
 			$params = [
-				'sidiCode'=>$data["sidiCode"]
+				'idStudent'=>$data["idStudent"],
+				'idClass'=>$data["idClass"]
 			];
 			$stmt->execute($params);
-			//ritorno il json dello studente inserito
+			//ritorno il json dell'inserimento
 			$data = $stmt->fetch(\PDO::FETCH_ASSOC);
 			$js_encode = json_encode(array($data),true);
             //output
             header('Content-Type: application/json');
-            echo $js_encode;
+            echo $js_encode;	
 		break;
 		case 'DELETE':
 			$pathArray = explode('/',$_SERVER['REQUEST_URI']);
 			$id=$pathArray[3];
-			$sql = 'delete from student where id=:id';
+			$sql = 'delete from student_class where id=:id';
 			$stmt = $_con->prepare($sql);
 			$params = [
                     'id'=>$id
@@ -80,36 +79,26 @@
 			$json = file_get_contents('php://input');
 			//trasformo il json ricevuto
 			$data = json_decode($json,true);
-			$sql = 'update student set name=:name, surname=:surname, sidiCode=:sidiCode, taxCode=:taxCode where id=:id';
+			$sql = "update student_class set idStudent=:idStudent, idClass=:idClass where id=:id";
 			$stmt = $_con->prepare($sql);
-			
-			if($data['name']=="")	//campo obbligatorio
+
+			if(!isset($data['idStudent']) || !isset($data['idClass']))	//campo obbligatorio
 			{
-				echo 'Il campo name non può essere vuoto';
+				echo 'I campi non possono essere vuoti.';
 				break;
 			}
-			if($data['surname']=="")	//campo obbligatorio
+			/*if(!isset($data['idClass']))	//campo obbligatorio
 			{
-				echo 'Il campo surname non può essere vuoto';
+				echo 'Il campo idClass non può essere vuoto';
 				break;
-			}
-			if($data['sidiCode']=="")	//campo obbligatorio
-			{
-				echo 'Il campo sidiCode non può essere vuoto';
-				break;
-			}
-			if($data['taxCode']=="")
-				$data['taxCode']=null;
-			
+			}*/
 			$params = [
-				'name'=>$data['name'],
-				'surname'=>$data['surname'],
-				'sidiCode'=>$data['sidiCode'],
-				'taxCode'=>$data['taxCode'],
+				'idStudent'=>$data['idStudent'],
+				'idClass'=>$data['idClass'],
 				'id'=>$id
                 ];
 			$stmt->execute($params);
-			$sql = 'select * from student where id=:id';
+			$sql = 'select * from student_class where id=:id';
 			$stmt = $_con->prepare($sql);
 			$params = [
 				'id'=>$id
@@ -117,7 +106,7 @@
 			$stmt->execute($params);
 			$data = $stmt->fetch(\PDO::FETCH_ASSOC);
 			$js_encode = json_encode(array($data),true);
-            //output dei dati dello studente aggiornato
+            //output dei dati aggiornati
             header('Content-Type: application/json');
             echo $js_encode;
 		break;
@@ -127,22 +116,18 @@
 			$json = file_get_contents('php://input');
 			//trasformo il json ricevuto
 			$data = json_decode($json,true);
-			$sql = 'update student set ';
+			$sql = 'update student_class set ';
 			
-			if($data['name']!="")
-				$sql = $sql . 'name="' . $data['name'] . '",';
-			if($data['surname']!="")
-				$sql = $sql . 'surname="' . $data['surname'] . '",';
-			if($data['sidiCode']!="")
-				$sql = $sql . 'sidiCode="' . $data['sidiCode'] . '",';
-			if($data['taxCode']!="")
-				$sql = $sql . 'taxCode="' . $data['taxCode'] . '",';
+			if($data['idStudent']!="")
+				$sql = $sql . 'idStudent="' . $data['idStudent'] . '",';
+			if($data['idClass']!="")
+				$sql = $sql . 'idClass="' . $data['idClass'] . '",';
 			
 			$sql = substr($sql, 0, strlen($sql)-1);	//tolgo l'ultima virgola
 			$sql = $sql . ' where id=' . $id;
 			$stmt = $_con->prepare($sql);
 			$stmt->execute();
-			$sql = 'select * from student where id=:id';
+			$sql = 'select * from student_class where id=:id';
 			$stmt = $_con->prepare($sql);
 			$params = [
 				'id'=>$id
@@ -150,7 +135,7 @@
 			$stmt->execute($params);
 			$data = $stmt->fetch(\PDO::FETCH_ASSOC);
 			$js_encode = json_encode(array($data),true);
-            //output dei dati dello studente aggiornato
+            //output dei dati aggiornati
             header('Content-Type: application/json');
             echo $js_encode;
 		break;

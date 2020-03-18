@@ -39,7 +39,7 @@
 		case 'POST':
 			//prendo il json della richiesta
 			$json = file_get_contents('php://input');
-			//trasformo il json ricevuto in un oggetto
+			//trasformo il json ricevuto 
 			$data = json_decode($json,true);
 			$sql = "insert into class values(default, :year, :section);";
 			$stmt = $_con->prepare($sql);
