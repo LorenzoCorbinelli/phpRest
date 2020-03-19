@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Home</title>
+		 <script src="js.js"></script> 
+		 <link rel="stylesheet" type="text/css" href="style.css">
+		 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	</head>
+	<body>
+		<select id="scelta_tabella" onchange="scelta_tabella()">
+			Seleziona la tabella da visualizzare:
+			<option value="default">Seleziona tabella</option>
+			<option value="students">Studenti</option>
+			<option value="classes">Classi</option>
+			<option value="student_class">Studenti per classe</option>
+		</select>
+		<div id="tabella"></div>
+	</body>
+</html>

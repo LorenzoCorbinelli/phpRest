@@ -31,7 +31,7 @@
                 $stmt->execute();
                 $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             }
-            $js_encode = json_encode(array($data),true);
+            $js_encode = json_encode(array('status'=>true, 'student_classInfo'=>$data),true);
             //output
             header('Content-Type: application/json');
             echo $js_encode;
@@ -57,7 +57,7 @@
 			$stmt->execute($params);
 			//ritorno il json dell'inserimento
 			$data = $stmt->fetch(\PDO::FETCH_ASSOC);
-			$js_encode = json_encode(array($data),true);
+			$js_encode = json_encode(array('status'=>true, 'student_classInfo'=>$data),true);
             //output
             header('Content-Type: application/json');
             echo $js_encode;	
@@ -87,11 +87,6 @@
 				echo 'I campi non possono essere vuoti.';
 				break;
 			}
-			/*if(!isset($data['idClass']))	//campo obbligatorio
-			{
-				echo 'Il campo idClass non può essere vuoto';
-				break;
-			}*/
 			$params = [
 				'idStudent'=>$data['idStudent'],
 				'idClass'=>$data['idClass'],
@@ -105,7 +100,7 @@
 			];
 			$stmt->execute($params);
 			$data = $stmt->fetch(\PDO::FETCH_ASSOC);
-			$js_encode = json_encode(array($data),true);
+			$js_encode = json_encode(array('status'=>true, 'student_classInfo'=>$data),true);
             //output dei dati aggiornati
             header('Content-Type: application/json');
             echo $js_encode;
@@ -134,7 +129,7 @@
 			];
 			$stmt->execute($params);
 			$data = $stmt->fetch(\PDO::FETCH_ASSOC);
-			$js_encode = json_encode(array($data),true);
+			$js_encode = json_encode(array('status'=>true, 'student_classInfo'=>$data),true);
             //output dei dati aggiornati
             header('Content-Type: application/json');
             echo $js_encode;

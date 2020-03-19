@@ -31,7 +31,7 @@
                 $stmt->execute();
                 $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             }
-            $js_encode = json_encode(array($data),true);
+            $js_encode = json_encode(array('status'=>true, 'classInfo'=>$data),true);
             //output
             header('Content-Type: application/json');
             echo $js_encode;
@@ -57,7 +57,7 @@
 			$stmt->execute($params);
 			//ritorno il json dello studente inserito
 			$data = $stmt->fetch(\PDO::FETCH_ASSOC);
-			$js_encode = json_encode(array($data),true);
+			$js_encode = json_encode(array('status'=>true, 'classInfo'=>$data),true);
             //output
             header('Content-Type: application/json');
             echo $js_encode;
@@ -101,7 +101,7 @@
 			];
 			$stmt->execute($params);
 			$data = $stmt->fetch(\PDO::FETCH_ASSOC);
-			$js_encode = json_encode(array($data),true);
+			$js_encode = json_encode(array('status'=>true, 'classInfo'=>$data),true);
             //output dei dati della classe aggiornata
             header('Content-Type: application/json');
             echo $js_encode;
@@ -130,7 +130,7 @@
 			];
 			$stmt->execute($params);
 			$data = $stmt->fetch(\PDO::FETCH_ASSOC);
-			$js_encode = json_encode(array($data),true);
+			$js_encode = json_encode(array('status'=>true, 'classInfo'=>$data),true);
             //output dei dati della classe aggiornata
             header('Content-Type: application/json');
             echo $js_encode;
