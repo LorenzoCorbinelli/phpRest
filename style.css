@@ -1,6 +1,19 @@
-#tabella 
+#div_tabella 
 {
 	width:60%;
 	margin-top: 15px;
+	margin-left: 25%;
+}
+
+
+#scelta_tabella
+{
+	margin-top: 40px;
+	margin-left: 25%;
+}
+
+#aggiungi
+{
+	margin-top: 50px;
 	margin-left: 25%;
 }
