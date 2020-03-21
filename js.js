@@ -28,13 +28,14 @@ function crea_tabella_getStudents(xhr)
 	var th='<tr><th>ID</th><th>NAME</th><th>SURNAME</th><th>SIDICODE</th><th>TAXCODE</th><th></th></tr>';
 	table+=th;
 	json.studentInfo.forEach(function riga(item){
-		var tr='<tr>';
+		var idOpzione='student'+item.id;
+		var tr='<tr onmouseover="mostra_opzioni('+idOpzione+')" onmouseout="nascondi_opzioni('+idOpzione+')">';
 		tr+='<td>'+item.id+'</td>';
 		tr+='<td>'+item.name+'</td>';
 		tr+='<td>'+item.surname+'</td>';
 		tr+='<td>'+item.sidiCode+'</td>';
 		tr+='<td>'+item.taxCode+'</td>';
-		tr+='<td class="opzioni" ><img name="'+item.id+'"src="./resources/delete.svg" onclick="Delete_students(this)"> <img src="./resources/edit.svg"></td></tr>';
+		tr+='<td id='+idOpzione+' hidden=true><img name="'+item.id+'"src="./resources/delete.svg" onclick="Delete_students(this)"> <img src="./resources/edit.svg"></td></tr>';
 		table+=tr;
 	});
 	table+='</table>'; 
@@ -48,12 +49,14 @@ function crea_tabella_getClasses(xhr)
 	var th='<tr><th>ID</th><th>YEAR</th><th>SECTION</th><th></th></tr>';
 	table+=th;
 	json.classInfo.forEach(function riga(item){
-		var tr='<tr>';
-		tr+='<tr><td>'+item.id+'</td>';
+		var idOpzione='class'+item.id;
+		var tr='<tr onmouseover="mostra_opzioni('+idOpzione+')" onmouseout="nascondi_opzioni('+idOpzione+')">';
+		tr+='<td>'+item.id+'</td>';
 		tr+='<td>'+item.year+'</td>';
 		tr+='<td>'+item.section+'</td>';
-		tr+='<td class="opzioni" ><img name="'+item.id+'" src="./resources/delete.svg" onclick="Delete_classes(this)">  <img src="./resources/edit.svg"></td></tr>';
+		tr+='<td id='+idOpzione+' hidden=true><img name="'+item.id+'" src="./resources/delete.svg" onclick="Delete_classes(this)">  <img src="./resources/edit.svg"></td></tr>';
 		table+=tr;
+		//console.log(idOpzione);
 	});
 	table+='</table>'; 
 	document.getElementById('div_tabella').innerHTML=table; 
@@ -66,12 +69,14 @@ function crea_tabella_getStudentClass(xhr)
 	var th='<tr><th>ID</th><th>ID_STUDENT</th><th>ID_CLASS</th><th></th></tr>';
 	table+=th;
 	json.student_classInfo.forEach(function riga(item){
-		var tr='<tr>';
-		tr+='<tr><td>'+item.id+'</td>';
+		var idOpzione='studentClass'+item.id;
+		var tr='<tr onmouseover="mostra_opzioni('+idOpzione+')" onmouseout="nascondi_opzioni('+idOpzione+')">';
+		tr+='<td>'+item.id+'</td>';
 		tr+='<td>'+item.idStudent+'</td>';
 		tr+='<td>'+item.idClass+'</td>';
-		tr+='<td class="opzioni" ><img name="'+item.id+'" src="./resources/delete.svg" onclick="Delete_studentClass(this)">  <img src="./resources/edit.svg"></td></tr>';
+		tr+='<td id='+idOpzione+' hidden=true><img name="'+item.id+'" src="./resources/delete.svg" onclick="Delete_studentClass(this)">  <img src="./resources/edit.svg"></td></tr>';
 		table+=tr;
+		//console.log(idOpzione);
 	});
 	table+='</table>'; 
 	document.getElementById('div_tabella').innerHTML=table;
@@ -122,17 +127,16 @@ function Delete_studentClass(obj)
 	xhr.send();
 }
 
-/*function mostra_opzioni()
+function mostra_opzioni(Opzione)
 {
-	for(var i=0;i<document.getElementsByClassName('opzioni').length;i++)
-		document.getElementsByClassName('opzioni')[i].hidden=false;
+	//console.log(Opzione);
+	document.getElementById(Opzione.id).hidden=false;
 }
 
-function nascondi_opzioni()
+function nascondi_opzioni(Opzione)
 {
-	for(var i=0;i<document.getElementsByClassName('opzioni').length;i++)
-		document.getElementsByClassName('opzioni')[i].hidden=true;
-}*/
+	document.getElementById(Opzione.id).hidden=true;
+}
 
 function get_students()
 {
