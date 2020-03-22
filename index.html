@@ -7,14 +7,15 @@
 		 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	</head>
 	<body>
-		<select id="scelta_tabella" onchange="scelta_tabella()">
+		<select id="scelta_tabella" class="custom-select w-25" onchange="scelta_tabella()">
 			Seleziona la tabella da visualizzare:
 			<option value="default">Seleziona tabella</option>
 			<option value="students">Studenti</option>
 			<option value="classes">Classi</option>
 			<option value="student_class">Studenti per classe</option>
 		</select> <br>
-		<button id="aggiungi" onclick="post()" class="btn btn-success" hidden=true><img src="./resources/add.svg">  Aggiungi</button>
+		<button id="aggiungi" onclick="mostra_post()" class="btn btn-success" hidden=true><img src="./resources/add.svg">  Aggiungi</button>
+		<div id="form_post"></div>
 		<div id="div_tabella" class="table-responsive"></div>
 	</body>
 </html>
