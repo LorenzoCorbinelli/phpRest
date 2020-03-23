@@ -3,6 +3,7 @@
 	margin-top: 15px;
 	margin-left: 25%;
 	width:60%;
+	height:400px;
 }
 
 #scelta_tabella
@@ -15,10 +16,17 @@
 {
 	margin-top: 50px;
 	margin-left: 25%;
+	background-color: #008000;
 }
 
 #form_post
 {
-	margin-top: 15px;
+	margin-top: 65px;
 	margin-left: 25%;
 }
+
+#surname, #taxCode, #section, #idClass
+{
+	margin-left: 5px;
+}
+

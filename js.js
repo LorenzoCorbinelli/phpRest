@@ -182,11 +182,29 @@ function get_studentClass()
 
 function mostra_post()
 {
+	document.getElementById('aggiungi').hidden=true;
+	document.getElementById('form_post').hidden=false;
 	switch(document.getElementById('scelta_tabella').value)
 	{
 		case 'students':
-			document.getElementById('form_post').hidden=false;
-			document.getElementById('form_post').innerHTML='<form><input type="text" placeholder="Name" id="name"><br><input type="text" placeholder="Surname" id="surname"><br><input type="text" placeholder="SidiCode" id="sidiCode"><br><input type="text" placeholder="TaxCode" id="taxCode"><br><input type="button" value="Aggiungi" onclick="post()"></form>';
+			document.getElementById('form_post').innerHTML='<form><div class="form-inline">'+
+			'<input type="text" placeholder="Name" id="name" class="form-control w-25">'+
+			'<input type="text" placeholder="Surname" id="surname" class="form-control w-25"></div><br>'+
+			'<div class="form-inline"><input type="text" placeholder="SidiCode" id="sidiCode" class="form-control w-25">'+
+			'<input type="text" placeholder="TaxCode" id="taxCode" class="form-control w-25"></div><br>'+
+			'<input type="button" value="Aggiungi" onclick="post()" class="btn btn-success"></form>';
+		break;
+		case 'classes':
+			document.getElementById('form_post').innerHTML='<form>'+
+			'<div class="form-inline"><input type="text" placeholder="Year" id="year" class="form-control w-25">'+
+			'<input type="text" placeholder="Section" id="section" class="form-control w-25"></div><br>'+
+			'<input type="button" value="Aggiungi" onclick="post()" class="btn btn-success"></form>';
+		break;
+		case 'student_class':
+			document.getElementById('form_post').innerHTML='<form>'+
+			'<div class="form-inline"><input type="text" placeholder="ID_student" id="idStudent" class="form-control w-25">'+
+			'<input type="text" placeholder="ID_class" id="idClass" class="form-control w-25"></div><br>'+
+			'<input type="button" value="Aggiungi" onclick="post()" class="btn btn-success"></form>';
 		break;
 	}
 }
@@ -194,6 +212,7 @@ function mostra_post()
 function post()
 {
 	document.getElementById('form_post').hidden=true;
+	document.getElementById('aggiungi').hidden=false;
 	var xhr = new XMLHttpRequest();
 	//configuro la callback di errore
 	xhr.onerror = function() { 
@@ -211,6 +230,26 @@ function post()
 			var json = '{"name":"' + document.getElementById('name').value + '", "surname":"' + document.getElementById('surname').value + '", "sidiCode":"' + document.getElementById('sidiCode').value + '", "taxCode":"' + document.getElementById('taxCode').value +'"}';
 			xhr.setRequestHeader("Content-type", "application/json");
 			xhr.send(json);
+		break;
+		case 'classes':
+			//configuro la callback per la risposta
+			xhr.onload = function() {
+				get_classes();
+			};
+			xhr.open("POST", 'classes.php', true);
+			var json = '{"year":"' + document.getElementById('year').value + '", "section":"' + document.getElementById('section').value + '"}';
+			xhr.setRequestHeader("Content-type", "application/json");
+			xhr.send(json)
+		break;
+		case 'student_class':
+			//configuro la callback per la risposta
+			xhr.onload = function() {
+				get_studentClass();
+			};
+			xhr.open("POST", 'student_class.php', true);
+			var json = '{"idStudent":"' + document.getElementById('idStudent').value + '", "idClass":"' + document.getElementById('idClass').value + '"}';
+			xhr.setRequestHeader("Content-type", "application/json");
+			xhr.send(json)
 		break;
 	}
 }
