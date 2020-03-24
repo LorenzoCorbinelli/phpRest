@@ -191,22 +191,31 @@ function mostra_post()
 			'<input type="text" placeholder="Name" id="name" class="form-control w-25">'+
 			'<input type="text" placeholder="Surname" id="surname" class="form-control w-25"></div><br>'+
 			'<div class="form-inline"><input type="text" placeholder="SidiCode" id="sidiCode" class="form-control w-25">'+
-			'<input type="text" placeholder="TaxCode" id="taxCode" class="form-control w-25"></div><br>'+
-			'<input type="button" value="Aggiungi" onclick="post()" class="btn btn-success"></form>';
+			'<input type="text" placeholder="TaxCode" id="taxCode" class="form-control w-25"></div></form><br>'+
+			'<button onclick="post()" class="btn btn-success"><img src="./resources/add.svg">  Aggiungi'+
+			'<button id="annulla" class="btn btn-danger" onclick="annulla()"><img src="./resources/x.svg">  Annulla</button>';
 		break;
 		case 'classes':
 			document.getElementById('form_post').innerHTML='<form>'+
 			'<div class="form-inline"><input type="text" placeholder="Year" id="year" class="form-control w-25">'+
-			'<input type="text" placeholder="Section" id="section" class="form-control w-25"></div><br>'+
-			'<input type="button" value="Aggiungi" onclick="post()" class="btn btn-success"></form>';
+			'<input type="text" placeholder="Section" id="section" class="form-control w-25"></div><br></form>'+
+			'<button onclick="post()" class="btn btn-success"><img src="./resources/add.svg">  Aggiungi'+
+			'<button id="annulla" class="btn btn-danger" onclick="annulla()"><img src="./resources/x.svg">  Annulla</button>';
 		break;
 		case 'student_class':
 			document.getElementById('form_post').innerHTML='<form>'+
 			'<div class="form-inline"><input type="text" placeholder="ID_student" id="idStudent" class="form-control w-25">'+
-			'<input type="text" placeholder="ID_class" id="idClass" class="form-control w-25"></div><br>'+
-			'<input type="button" value="Aggiungi" onclick="post()" class="btn btn-success"></form>';
+			'<input type="text" placeholder="ID_class" id="idClass" class="form-control w-25"></div><br></form>'+
+			'<button onclick="post()" class="btn btn-success"><img src="./resources/add.svg">  Aggiungi'+
+			'<button id="annulla" class="btn btn-danger" onclick="annulla()"><img src="./resources/x.svg">  Annulla</button>';
 		break;
 	}
+}
+
+function annulla()
+{
+	document.getElementById('form_post').hidden=true;
+	document.getElementById('aggiungi').hidden=false;
 }
 
 function post()
