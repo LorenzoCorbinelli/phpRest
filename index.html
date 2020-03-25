@@ -4,7 +4,10 @@
 		<title>Home</title>
 		 <script src="js.js"></script> 
 		 <link rel="stylesheet" type="text/css" href="style.css">
-		 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+		 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+		 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+		 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 	</head>
 	<body>
 		<select id="scelta_tabella" class="custom-select w-25" onchange="scelta_tabella()">
@@ -14,8 +17,30 @@
 			<option value="classes">Classi</option>
 			<option value="student_class">Studenti per classe</option>
 		</select> <br>
-		<button id="aggiungi" onclick="mostra_post()" class="btn btn-success" hidden=true><img src="./resources/add.svg">  Aggiungi</button>
-		<div id="form_post" hidden=true></div>
+		<button id="aggiungi" onclick="mostra_form()" class="btn btn-success" hidden=true><img src="./resources/add.svg">  Aggiungi</button>
+		<div id="form" hidden=true></div>
 		<div id="div_tabella" class="table-responsive"></div>
+  
+		<!-- Modal -->
+		<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="false">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+				<h5 class="modal-title">Cancellazione</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				</div>
+				<div class="modal-body">
+					Sei sicuro di volerlo eliminare?
+				</div>
+				<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-dismiss="modal">Annulla</button>
+				<button type="button" class="btn btn-primary" id="modalConferma" onclick="Delete(this)" data-dismiss="modal">Si</button>
+				</div>
+			</div>
+			</div>
+		</div> 
+		<div id="popup"></div>
 	</body>
 </html>
