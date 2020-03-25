@@ -9,32 +9,49 @@
     $requestMethod = $_SERVER["REQUEST_METHOD"];
     switch($requestMethod)
     {
-        case 'GET':
-            $pathArray = explode('/',$_SERVER['REQUEST_URI']);
-            if(isset($pathArray[3]))
-            {
-                //con parametro id
-                $id = $pathArray[3];
-                $sql = "select * from student_class where id=:id";
-                $stmt = $_con->prepare($sql);
+		case 'GET':
+			if($_GET["class"]) // http://localhost/student_class.php?class=105
+			{
+				$sql = 'select S.* from student S inner join student_class SC on S.id = SC.idStudent where SC.idClass=:idClass;';
+				$stmt = $_con->prepare($sql);
                 $params = [
-                    'id'=>$id
+                    'idClass'=>$_GET["class"]
                 ];
-                $stmt->execute($params);
-                $data = $stmt->fetch(\PDO::FETCH_ASSOC);
-            }
-            else
-            {
-                //senza il parametro id torna tutta la tabella
-                $sql = "select * from student_class";
-                $stmt = $_con->prepare($sql);
-                $stmt->execute();
-                $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            }
-            $js_encode = json_encode(array('status'=>true, 'student_classInfo'=>$data),true);
-            //output
-            header('Content-Type: application/json');
-            echo $js_encode;
+				$stmt->execute($params);
+				$data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+				$js_encode = json_encode(array('status'=>true, 'student_classInfo'=>$data),true);
+				//output
+				header('Content-Type: application/json');
+				echo $js_encode;
+			}
+			else
+			{
+				$pathArray = explode('/',$_SERVER['REQUEST_URI']);
+				if(isset($pathArray[3]))
+				{
+					//con parametro id
+					$id = $pathArray[3];
+					$sql = "select * from student_class where id=:id";
+					$stmt = $_con->prepare($sql);
+					$params = [
+						'id'=>$id
+					];
+					$stmt->execute($params);
+					$data = $stmt->fetch(\PDO::FETCH_ASSOC);
+				}
+				else
+				{
+					//senza il parametro id torna tutta la tabella
+					$sql = "select * from student_class";
+					$stmt = $_con->prepare($sql);
+					$stmt->execute();
+					$data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+				}
+				$js_encode = json_encode(array('status'=>true, 'student_classInfo'=>$data),true);
+				//output
+				header('Content-Type: application/json');
+				echo $js_encode;
+			}
         break;
 		case 'POST':
 			//prendo il json della richiesta
@@ -63,14 +80,26 @@
             echo $js_encode;	
 		break;
 		case 'DELETE':
-			$pathArray = explode('/',$_SERVER['REQUEST_URI']);
-			$id=$pathArray[3];
-			$sql = 'delete from student_class where id=:id';
-			$stmt = $_con->prepare($sql);
-			$params = [
-                    'id'=>$id
-                ];
-			$stmt->execute($params);
+			if($_GET['idStudent'])
+			{
+				$sql = 'delete from student_class where idStudent=:idStudent';
+				$stmt = $_con->prepare($sql);
+				$params = [
+						'idStudent'=>$_GET['idStudent']
+					];
+				$stmt->execute($params);
+			}
+			else
+			{
+				$pathArray = explode('/',$_SERVER['REQUEST_URI']);
+				$id=$pathArray[3];
+				$sql = 'delete from student_class where id=:id';
+				$stmt = $_con->prepare($sql);
+				$params = [
+						'id'=>$id
+					];
+				$stmt->execute($params);
+			}
 			echo 'Cancellazione effettuata.';
 		break;
 		case 'PUT':

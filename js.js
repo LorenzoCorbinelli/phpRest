@@ -4,19 +4,39 @@ function scelta_tabella()
 	{
 		case 'students':
 			document.getElementById('aggiungi').hidden=false;
+			document.getElementById('form').hidden=true;
 			get_students();
 		break;
 		case 'classes':
 			document.getElementById('aggiungi').hidden=false;
+			document.getElementById('form').hidden=true;
 			get_classes();
 		break;
 		case 'student_class':
-			document.getElementById('aggiungi').hidden=false;
-			get_studentClass();
+			document.getElementById('div_tabella').innerHTML='';
+			var xhr = new XMLHttpRequest();
+			//configuro la callback di errore
+			xhr.onerror = function() { 
+				alert('Errore');
+			};
+			xhr.onload = function() {
+				var json=JSON.parse(xhr.response);
+				var select = 'Classe: <br><select id="Elencoclassi" class="custom-select w-25" onchange="get_studentClass()"><option>Seleziona la classe</option>';
+				json.classInfo.forEach(function riga(item){
+					select+='<option id="'+item.id+'">'+item.section+'</option>';
+				});
+				select+='</select>';
+				document.getElementById('form').innerHTML=select;
+				document.getElementById('form').hidden=false;
+				document.getElementById('aggiungi').hidden=true;
+			};
+			xhr.open("GET", 'classes.php', true);
+			xhr.send();
 		break;
 		case 'default':
 			document.getElementById('div_tabella').innerHTML='';
 			document.getElementById('aggiungi').hidden=true;
+			document.getElementById('form').hidden=true;
 		break;
 	}
 }
@@ -63,14 +83,16 @@ function crea_tabella_getStudentClass(xhr)
 {
 	var json=JSON.parse(xhr.response);
 	var table='<table id="tabellaStudentsClasses" class="table table-hover">';
-	var th='<tr><th>ID_STUDENT</th><th>ID_CLASS</th></tr>';
+	var th='<tr><th>NAME</th><th>SURNAME</th><th>SIDICODE</th><th>TAXCODE</th></tr>';
 	table+=th;
 	json.student_classInfo.forEach(function riga(item){
 		var idOpzione='studentClass'+item.id;
 		var tr='<tr onmouseover="mostra_opzioni('+idOpzione+')" onmouseout="nascondi_opzioni('+idOpzione+')">';
-		tr+='<td>'+item.idStudent+'</td>';
-		tr+='<td>'+item.idClass+'</td>';
-		tr+='<td id='+idOpzione+' hidden=true><img name="'+item.id+'" src="./resources/delete.svg" data-toggle="modal" data-target="#deleteModal" onclick=document.getElementById("modalConferma").name="'+item.id+'">  <img src="./resources/edit.svg" id="'+item.id+'" onclick="edit(this)"></td></tr>';
+		tr+='<td>'+item.name+'</td>';
+		tr+='<td>'+item.surname+'</td>';
+		tr+='<td>'+item.sidiCode+'</td>';
+		tr+='<td>'+item.taxCode+'</td>';
+		tr+='<td id='+idOpzione+' hidden=true><img name="'+item.id+'" src="./resources/delete.svg" data-toggle="modal" data-target="#deleteModal" onclick=document.getElementById("modalConferma").name="'+item.id+'">';
 		table+=tr;
 	});
 	table+='</table>'; 
@@ -106,7 +128,7 @@ function Delete(obj)
 			xhr.onload = function() {
 				get_studentClass();
 			};
-			xhr.open("DELETE", 'student_class.php/'+obj.name, true);
+			xhr.open("DELETE", 'student_class.php?idStudent='+obj.name, true);
 		break;
 	}
 	xhr.send();
@@ -139,14 +161,6 @@ function edit(obj)
 			};
 			xhr.open("GET", 'classes.php/'+obj.id, true);
 		break;
-		case 'student_class':
-			xhr.onload = function() {
-				var json=JSON.parse(xhr.response);
-				document.getElementById('idStudent').value=json.student_classInfo.idStudent;
-				document.getElementById('idClass').value=json.student_classInfo.idClass;
-			};
-			xhr.open("GET", 'student_class.php/'+obj.id, true);
-		break;
 	}
 	xhr.send();
 }
@@ -170,13 +184,6 @@ function mostra_form_put(obj)
 			document.getElementById('form').innerHTML='<form>'+
 			'<div class="form-inline"><input type="text" placeholder="Year" id="year" class="form-control w-25">'+
 			'<input type="text" placeholder="Section" id="section" class="form-control w-25"></div><br></form>'+
-			'<button onclick="put('+obj.id+')" class="btn btn-success"><img src="./resources/edit-3.svg">  Modifica'+
-			'<button id="annulla" class="btn btn-danger" onclick="annulla()"><img src="./resources/x.svg">  Annulla</button>';
-		break;
-		case 'student_class':
-			document.getElementById('form').innerHTML='<form>'+
-			'<div class="form-inline"><input type="text" placeholder="ID_student" id="idStudent" class="form-control w-25">'+
-			'<input type="text" placeholder="ID_class" id="idClass" class="form-control w-25"></div><br></form>'+
 			'<button onclick="put('+obj.id+')" class="btn btn-success"><img src="./resources/edit-3.svg">  Modifica'+
 			'<button id="annulla" class="btn btn-danger" onclick="annulla()"><img src="./resources/x.svg">  Annulla</button>';
 		break;
@@ -211,16 +218,6 @@ function put(id)
 			};
 			xhr.open("PUT", 'classes.php/'+id, true);
 			var json = '{"year":"' + document.getElementById('year').value + '", "section":"' + document.getElementById('section').value + '"}';
-			xhr.setRequestHeader("Content-type", "application/json");
-			xhr.send(json)
-		break;
-		case 'student_class':
-			//configuro la callback per la risposta
-			xhr.onload = function() {
-				get_studentClass();
-			};
-			xhr.open("PUT", 'student_class.php/'+id, true);
-			var json = '{"idStudent":"' + document.getElementById('idStudent').value + '", "idClass":"' + document.getElementById('idClass').value + '"}';
 			xhr.setRequestHeader("Content-type", "application/json");
 			xhr.send(json)
 		break;
@@ -268,7 +265,7 @@ function get_classes()
 
 function get_studentClass()
 {
-	var xhr = new XMLHttpRequest();
+	var xhr = new XMLHttpRequest()
 	//configuro la callback per la risposta
 	xhr.onload = function() {
 		crea_tabella_getStudentClass(xhr);
@@ -277,7 +274,8 @@ function get_studentClass()
 	xhr.onerror = function() { 
 		alert('Errore');
 	};
-	xhr.open("GET", 'student_class.php', true);
+	var idClass = document.getElementById("Elencoclassi").item(document.getElementById("Elencoclassi").selectedIndex).id;
+	xhr.open("GET", 'student_class.php?class='+idClass, true);
 	xhr.send();
 }
 
@@ -288,13 +286,30 @@ function mostra_form()
 	switch(document.getElementById('scelta_tabella').value)
 	{
 		case 'students':
-			document.getElementById('form').innerHTML='<form><div class="form-inline">'+
-			'<input type="text" placeholder="Name" id="name" class="form-control w-25">'+
-			'<input type="text" placeholder="Surname" id="surname" class="form-control w-25"></div><br>'+
-			'<div class="form-inline"><input type="text" placeholder="SidiCode" id="sidiCode" class="form-control w-25">'+
-			'<input type="text" placeholder="TaxCode" id="taxCode" class="form-control w-25"></div></form><br>'+
-			'<button onclick="post()" class="btn btn-success"><img src="./resources/add.svg">  Aggiungi'+
-			'<button id="annulla" class="btn btn-danger" onclick="annulla()"><img src="./resources/x.svg">  Annulla</button>';
+			var xhr = new XMLHttpRequest();
+			//configuro la callback per la risposta
+			xhr.onload = function() {
+				var json=JSON.parse(xhr.response);
+				var select = 'Classe: <br><select id="classi" class="custom-select w-25">';
+				json.classInfo.forEach(function riga(item){
+					select+='<option id="'+item.id+'">'+item.section+'</option>';
+				});
+				select+='</select>';
+				document.getElementById('form').innerHTML='<form><div class="form-inline">'+
+				'<input type="text" placeholder="Name" id="name" class="form-control w-25">'+
+				'<input type="text" placeholder="Surname" id="surname" class="form-control w-25"></div><br>'+
+				'<div class="form-inline"><input type="text" placeholder="SidiCode" id="sidiCode" class="form-control w-25">'+
+				'<input type="text" placeholder="TaxCode" id="taxCode" class="form-control w-25"></div></form><br>'+
+				select +
+				'<br><br><button onclick="post()" class="btn btn-success"><img src="./resources/add.svg">  Aggiungi'+
+				'<button id="annulla" class="btn btn-danger" onclick="annulla()"><img src="./resources/x.svg">  Annulla</button>';
+			};
+			//configuro la callback di errore
+			xhr.onerror = function() { 
+				alert('Errore');
+			};
+			xhr.open("GET", 'classes.php', true);
+			xhr.send();
 		break;
 		case 'classes':
 			document.getElementById('form').innerHTML='<form>'+
@@ -334,6 +349,13 @@ function post()
 		case 'students':
 			//configuro la callback per la risposta
 			xhr.onload = function() {
+				json=JSON.parse(xhr.response);
+				var idStudent = json.studentInfo.id;
+				var idClass = document.getElementById("classi").item(document.getElementById("classi").selectedIndex).id;
+				xhr.open("POST","student_class.php",true);
+				json = '{"idStudent":"' + idStudent + '", "idClass":"' + idClass + '"}';
+				xhr.setRequestHeader("Content-type", "application/json");
+				xhr.send(json);
 				get_students();
 			};
 			xhr.open("POST", 'students.php', true);
